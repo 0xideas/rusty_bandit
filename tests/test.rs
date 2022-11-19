@@ -1,4 +1,5 @@
 use rusty_bandit::add;
+use rusty_bandit::simple_bandits::BayesianBandit;
 
 #[cfg(test)]
 mod tests {
