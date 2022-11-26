@@ -4,8 +4,8 @@ use rand::rngs::StdRng;
 use rand::distributions::Distribution;
 
 pub struct BayesianBandit{
-    n_arms: i8,
-    arms: Vec<Beta>,
+    pub n_arms: i8,
+    pub arms: Vec<Beta>,
     rng: StdRng
 }
 
@@ -19,7 +19,7 @@ impl BayesianBandit{
         BayesianBandit{ n_arms, arms, rng}
     }
 
-    pub fn update(mut self, arm: i8, success: bool) -> () {
+    pub fn update(mut self, arm: i8, success: bool) -> Self {
         let arm_size: usize = arm.try_into().unwrap();
         let beta = self.arms[arm_size];
         if success {
@@ -29,10 +29,13 @@ impl BayesianBandit{
             let new_beta = Beta::new(beta.shape_a(), beta.shape_b()+ 1.0).unwrap();
             self.arms[arm_size] = new_beta;
         }
+        self
     }
 
     pub fn act<R: Rng + ?Sized>(&self, rng: &mut R) -> i8 {
-        let mut samples: Vec<u64> = self.arms.iter().map(|beta| -> u64 {beta.sample(rng).to_bits()}).collect();
+        let samples_float: Vec<f64> =  self.arms.iter().map(|beta| -> f64 {beta.sample(rng)}).collect();
+        //println!("{:?}", samples_float);
+        let samples: Vec<u64> = samples_float.iter().map(|v| -> u64 {v.to_bits()}).collect();
         let max_value: u64 = samples.iter().fold(0, |max: u64, val: &u64| if val > &max{ *val } else{ max });
         let largest = samples.iter().position(|r: &u64| r == &max_value).unwrap();
         let largest_int: i8 = largest.try_into().unwrap();
