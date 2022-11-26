@@ -14,6 +14,8 @@ fn print_action_frequency<R: Rng + ?Sized>(bandit: &BayesianBandit, n: i32, rng:
     }
 }
 
+
+
 fn main() {
     let mut bandit: BayesianBandit = BayesianBandit::new(3);
     let mut rng = rand::thread_rng();
@@ -26,6 +28,6 @@ fn main() {
 
     print_action_frequency(&bandit, 100, &mut rng);
 
-
+    println!("{}", bandit);
 }
 

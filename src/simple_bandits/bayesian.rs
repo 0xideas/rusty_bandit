@@ -1,3 +1,6 @@
+use std::fmt::{Display, Formatter};
+
+use std::fmt;
 use statrs::distribution::Beta;
 use rand::{Rng, SeedableRng};
 use rand::rngs::StdRng;
@@ -42,3 +45,12 @@ impl BayesianBandit{
         largest_int
     }
 }
+
+
+impl fmt::Display for BayesianBandit{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let arm_reprs: Vec<String> = self.arms.iter().enumerate().map(|(i,arm)| -> String {format!("arm {}: (a: {} b: {})", i, arm.shape_a(), arm.shape_b() )}).collect();
+        write!(f, "---BayesianBandit---\n{}", arm_reprs.join("\n"))
+    }
+}
+
